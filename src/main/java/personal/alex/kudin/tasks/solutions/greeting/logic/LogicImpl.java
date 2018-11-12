@@ -13,31 +13,26 @@ public class LogicImpl implements Logic {
     private final static Logger LOGGER = LogManager.getLogger(LogicImpl.class.getName());
 
     @Override
-    public int getTimeInHours(){
-        return LocalTime.now().getHour();
-    }
+    public String createMessage() {
 
-    @Override
-    public ResourceBundle getLocalBundle() {
+        /* Get the locale time in hours */
+        int hours = LocalTime.now().getHour();
 
+        /* Get the locale bundle according to the system locale */
         Locale locale = Locale.getDefault();
-
+        ResourceBundle localeBundle = ResourceBundle.getBundle("bundles.messages", Locale.ROOT);
         try {
-            return ResourceBundle.getBundle("bundles.messages", locale, new UTF8Control());
-        } catch (Exception e){
+            localeBundle = ResourceBundle.getBundle("bundles.messages", locale, new UTF8Control());
+        } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
 
-        return ResourceBundle.getBundle("bundles.messages", Locale.ROOT);
-    }
-
-    @Override
-    public String createMessage(int hour, ResourceBundle bundle) {
+        /* Get message from the respective locale bundle */
         String greeting = "";
-        if (6 <= hour && hour < 9)greeting = bundle.getString("morning");
-        if (9 <= hour && hour < 19)greeting = bundle.getString("day");
-        if (19 <= hour && hour < 23)greeting = bundle.getString("evening");
-        if ((0 <= hour &&  hour < 6) || hour == 23)greeting = bundle.getString("night");
+        if (6 <= hours && hours < 9) greeting = localeBundle.getString("morning");
+        if (9 <= hours && hours < 19) greeting = localeBundle.getString("day");
+        if (19 <= hours && hours < 23) greeting = localeBundle.getString("evening");
+        if ((0 <= hours && hours < 6) || hours == 23) greeting = localeBundle.getString("night");
 
         return greeting;
     }
